@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Studion Sescoop - Documentação SAP da COMIGO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+   <style>
+        :root {
+            /* Cores oficiais do Guia Pocket DOT */
+            --dot-green: #768900;       /* Maçã Verde */
+            --dot-black: #0C0A08;       /* Preto Esfumado */
+            --dot-white: #FDFDFD;       /* Fumaça Branca */
+            --sidebar-bg: #4A4A4A;
+            --sidebar-text: #FDFDFD;
+            --text-color: #0C0A08;
+            --code-bg: #1A1A1A;
+            --code-text: #FDFDFD;
+            --border-color: #E2E2E2;
+            --method-get: #0C0A08;      /* GET em Preto conforme minimalismo do guia */
+            --method-post: #768900;     /* POST em Verde DOT */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif; /* Tipografia oficial */
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--dot-white);
+            color: var(--text-color);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-right: 4px solid var(--dot-green); /* Detalhe em verde */
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(253, 253, 253, 0.1);
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .nav-group-title {
+            padding: 15px 20px 5px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #b5cc18; /* Verde mais claro para dar contraste no fundo cinza */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-weight: 300; /* Lato Light */
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(118, 137, 0, 0.15);
+            font-weight: 400; /* Lato Regular */
+            color: #d1ec15;
+        }
+
+        .nav-item.active {
+            border-left: 5px solid var(--dot-green);
+        }
+
+        .method-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-right: 12px;
+            color: white;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .method-badge.get { background-color: var(--method-get); }
+        .method-badge.post { background-color: var(--method-post); }
+        .method-badge.info { background-color: var(--dot-green); }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 50px 60px;
+            overflow-y: auto;
+            background-color: var(--dot-white);
+        }
+
+        .section {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { margin-bottom: 15px; font-size: 2.4rem; color: var(--dot-black); font-weight: 700; border-bottom: 2px solid var(--dot-green);}
+        h2 { margin: 40px 0 20px; font-size: 1.6rem; color: var(--dot-green); font-weight: 400; }
+        h3 { margin: 25px 0 15px; font-size: 1.2rem; font-weight: 700; }
+        p { line-height: 1.7; margin-bottom: 15px; color: #444; font-weight: 400; }
+
+        .endpoint-url {
+            display: flex;
+            align-items: center;
+            background-color: #F0F0F0;
+            padding: 18px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--dot-black);
+        }
+
+        .endpoint-url .method-badge { font-size: 0.8rem; margin-right: 15px; }
+
+        .server-url-box {
+            background-color: #F0F0F0;
+            padding: 15px 20px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--dot-black);
+            border-left: 5px solid var(--dot-green);
+            margin: 15px 0 25px 0;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th { background-color: #F8F8F8; color: var(--dot-black); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
+        
+        .required { color: #d9534f; font-weight: bold;}
+        .optional { color: #5bc0de; font-weight: bold;}
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+        }
+
+        code { font-family: 'Courier New', Courier, monospace; }
+
+        /* Boxes de Mensagem no Estilo DOT */
+        .alert-box {
+            background-color: #f4f4f4;
+            border-left: 4px solid var(--dot-black);
+            padding: 20px;
+            margin-bottom: 25px;
+            color: var(--dot-black);
+        }
+
+        .warning-box {
+            background-color: rgba(118, 137, 0, 0.05);
+            border-left: 4px solid var(--dot-green);
+            padding: 20px;
+            margin-bottom: 25px;
+            color: #4a5600;
+        }
+
+        .success-box {
+            background-color: #eef5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            margin-bottom: 25px;
+            color: #2e7d32;
+        }
+
+        ul { margin-bottom: 20px; padding-left: 20px; line-height: 1.8; }
+        li { margin-bottom: 8px; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            API Studion.mx <br>
+            <span style="font-size: 0.7rem; font-weight: 500; color: #b5cc18;">DOT Digital Group</span>
+        </div>
+        <ul class="nav-list" id="navList">
+            <li class="nav-item active" onclick="showSection('intro')">
+                <span class="method-badge info">INFO</span> Introdução
+            </li>
+            <li class="nav-item" onclick="showSection('auth')">
+                <span class="method-badge post">POST</span> Autenticação
+            </li>
+            <li class="nav-item" onclick="showSection('user-info')">
+                <span class="method-badge get">GET</span> Info do Usuário
+            </li>
+            
+            <div class="nav-group-title">Cursos Avulsos</div>
+            <li class="nav-item" onclick="showSection('list-courses')">
+                <span class="method-badge get">GET</span> Listar Cursos
+            </li>
+            <li class="nav-item" onclick="showSection('course-info')">
+                <span class="method-badge get">GET</span> Info do Curso
+            </li>
+            <li class="nav-item" onclick="showSection('list-course-enrollments')">
+                <span class="method-badge get">GET</span> Listar Matrículas
+            </li>
+            <li class="nav-item" onclick="showSection('search-course-enrollment')">
+                <span class="method-badge get">GET</span> Buscar Matrícula
+            </li>
+            <li class="nav-item" onclick="showSection('certificate-download-course')">
+                <span class="method-badge get">GET</span> Baixar Certificado
+            </li>
+
+            <div class="nav-group-title">Trilhas de Aprendizagem</div>
+            <li class="nav-item" onclick="showSection('list-paths')">
+                <span class="method-badge get">GET</span> Listar Trilhas
+            </li>
+            <li class="nav-item" onclick="showSection('path-info')">
+                <span class="method-badge get">GET</span> Info da Trilha
+            </li>
+            <li class="nav-item" onclick="showSection('list-path-enrollments')">
+                <span class="method-badge get">GET</span> Listar Matrículas
+            </li>
+            <li class="nav-item" onclick="showSection('search-path-enrollment')">
+                <span class="method-badge get">GET</span> Buscar Matrícula
+            </li>
+            <li class="nav-item" onclick="showSection('certificate-download-path')">
+                <span class="method-badge get">GET</span> Baixar Certificado
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <div id="intro" class="section active">
+            <h1>Visão Geral da Integração</h1>
+            <p>Seja bem-vindo à documentação base de integração entre os sistemas <strong>SAP da COMIGO</strong> e a plataforma <strong>Studion.mx</strong>, desenvolvida pela <strong>DOT Digital Group</strong>.</p>
+            <p>Este documento serve como guia técnico para orientar a equipe de engenharia no consumo dos serviços de consulta de cursos, trilhas e o status de matrículas dos usuários. Todos os endpoints mapeados no menu lateral correspondem estritamente aos escopos e fluxos combinados e acordados no documento técnico inicial do projeto.</p>
+            
+            <h2>URL Base (Host)</h2>
+            <p>Para realizar as requisições de teste e homologação do projeto, utilize o seguinte endereço de servidor:</p>
+            
+            <div class="server-url-box">
+                https://api-studion-sescoop.hom.dotgroup.com.br
+            </div>
+
+            <div class="warning-box">
+                <strong>📝 Nota Importante sobre as Rotas:</strong> A URL base descrita acima deve, obrigatoriamente, anteceder (ficar antes) de todos os caminhos relativos dos endpoints listados nesta documentação. 
+                <br><br>
+                <em>Exemplo prático:</em> Se o endpoint de autenticação está mapeado como <code>/api/login_check</code>, a requisição final contendo o Host completo deverá ser disparada para:
+                <br>
+                <code>https://api-studion-sescoop.hom.dotgroup.com.br/api/login_check</code>
+            </div>
+
+            <h2>Fluxo de Integração Sugerido</h2>
+            <p>Para um consumo correto e ordenado dos endpoints, recomendamos seguir a seguinte esteira lógica de desenvolvimento:</p>
+            <ul>
+                <li><strong>1. Autenticação:</strong> Realize a chamada enviando as credenciais para obter o Bearer Token (JWT).</li>
+                <li><strong>2. Listagens e Consultas:</strong> Navegue pela estrutura de Cursos e Trilhas utilizando os IDs para buscar informações detalhadas.</li>
+                <li><strong>3. Validação de Matrícula:</strong> Utilize os endpoints de busca passando parâmetros como <code>email</code> ou <code>username</code> para verificar o status e o progresso do usuário no respectivo conteúdo.</li>
+            </ul>
+        </div>
+
+        <div id="auth" class="section">
+            <h1>Autenticar Usuário</h1>
+            <p>Gera os tokens de acesso (Access Token) e de atualização (Refresh Token) a partir das credenciais do usuário. Este token será necessário para autenticar as requisições nos demais endpoints protegidos da API.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge post">POST</span>
+                /api/login_check
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Content-Type</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> Valor deve ser <code>application/x-www-form-urlencoded</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>⚠️ Atenção:</strong> Certifique-se de enviar os dados no formato <code>x-www-form-urlencoded</code>. Enviar como <code>application/json</code> resultará em erro.
+            </div>
+
+            <h2>Corpo da Requisição</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>_username</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O e-mail de acesso do usuário.</td>
+                    </tr>
+                    <tr>
+                        <td><code>_password</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> A senha de acesso do usuário.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "token": "eyJhbGciOiJSUzI1NiIsInR5...[JWT Omitido]",
+    "refresh_token": "eyJhbGciOiJIUzUxMiIsInR5...[Refresh Token Omitido]"
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/login_check' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode '_username=SEU_USUARIO' \
+--data-urlencode '_password=SUA_SENHA'</code></pre>
+        </div>
+
+        <div id="user-info" class="section">
+            <h1>Buscar Usuário por E-mail</h1>
+            <p>Retorna as informações detalhadas de um usuário cadastrado a partir do seu <code>e-mail</code>.</p>
+            
+            <div class="alert-box">
+                <strong>💡 Nota de Cache:</strong> Os dados de retorno deste endpoint passam por um mecanismo de cache interno com duração de até 1 semana. Alterações muito recentes no cadastro do usuário podem ter um leve atraso de sincronização nesta chamada.
+            </div>
+
+            <div class="warning-box">
+                <strong>🔑 Importante:</strong> Esta requisição retorna o campo <code>uuid</code>. O valor deste campo será obrigatório para realizar a matrícula do usuário em uma trilha ou curso.
+            </div>
+
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/users/email/{email}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>email</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O E-mail do usuário (Ex: usuarioemail@mail.com).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 919555,
+    "active": true,
+    "uuid": "a3a2ecb1-1c5c-4494-9d8a-66905789af09",
+    "profiles": [
+        { "id": 249, "name": "Admin", "alias": "admin" },
+        { "id": 250, "name": "Student", "alias": "student" }
+    ],
+    "meta": {
+        "vinculo_com_o_cooperativismo": 1,
+        "telefone": "11999999999"
+    }
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <p>Retornado caso o usuário não exista no banco de dados.</p>
+            <pre><code>{
+    "message": "user_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/users/email/usuarioemail@mail.com' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="list-courses" class="section">
+            <h1>Listar Cursos Avulsos Gerais</h1>
+            <p>Retorna uma listagem paginada de todos os cursos disponíveis na plataforma, com a possibilidade de incluir metadados adicionais.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/courses
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de Query String</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Número da página para paginação (Ex: 1).</td>
+                    </tr>
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Quantidade de itens por página (Ex: 12).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados extras no retorno (Ex: <code>categories,branches,meta</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>order[created_at]</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Ordenação de retorno (Ex: <code>desc</code> ou <code>asc</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "id": 152,
+            "studentShow": false,
+            "meta": {
+                "id": 158,
+                "alias": "objetivo_estrategico",
+                "name": "Objetivo Estratégico",
+                "type": {
+                    "id": 446,
+                    "alias": "select"
+                }
+            },
+            "entity": {
+                "id": 2,
+                "alias": "course",
+                "tableName": "courses"
+            },
+            "parameters": {
+                "required": false,
+                "options": [
+                    {
+                        "id": 1,
+                        "fields": { "name": "Fortalecer a cultura cooperativista" }
+                    }
+                ]
+            }
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 1,
+    "total": 7
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "course_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/courses?page=1&limit=12&embed=categories,branches,meta' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="course-info" class="section">
+            <h1>Obter Dados de um Curso Específico</h1>
+            <p>Retorna todas as informações detalhadas e estruturais de um curso (ex: regras, filiais atendidas, carga horária e metadados).</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/courses/{course_id}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL & Query</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>course_id</code> (URL)</td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico do curso (Ex: 63875).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code> (Query)</td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Campos adicionais suportados, separados por vírgula (Ex: <code>bidding_meta,branches_sessions</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 63875,
+    "name": "Curso - Rematrícula",
+    "active": true,
+    "duration": {
+        "value": 4800,
+        "type": "i",
+        "hours": 80.0,
+        "minutes": 4800
+    },
+    "workload": {
+        "type": "i",
+        "value": 4800
+    },
+    "rules": [
+        {
+            "id": 685230,
+            "name": "Generated rule for course 63875",
+            "type": {
+                "name": "Conclusão",
+                "alias": "conclusion"
+            },
+            "active": true
+        }
+    ],
+    "finalStatus": {
+        "id": 264,
+        "name": "Reprovado",
+        "alias": "reprovado"
+    },
+    "certificate": {
+        "id": 60,
+        "type": "conclusion"
+    },
+    "branches": [
+        {
+            "id": 46,
+            "name": "Nacional",
+            "materializedPath": "46",
+            "materializedPathChildrens": "46, 53, 55, 56 ... [Nós Omitidos para Brevidade]"
+        }
+    ],
+    "onboardingDays": 0,
+    "_embedded": {
+        "meta": {
+            "modalidade": 1,
+            "ofertante": 1
+        }
+    }
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "course_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/courses/63875?embed=bidding_meta,branches_sessions' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="list-course-enrollments" class="section">
+            <h1>Listar Matrículas de um Curso Avulso</h1>
+            <p>Lista todas as matrículas contidas em uma "Sessão" (turma) de um curso avulso específico.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/sessions/{session_id}/users/all
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID da sessão/turma pertencente ao curso (Ex: 11106).</td>
+                    </tr>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Query</td>
+                        <td><span class="optional">Opcional.</span> Número da página para consulta.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "uuid": "e5d18fb5-7e0d-4613-8419-8de130447100",
+            "id": 87911,
+            "statusUpdatedAt": "2026-05-20 12:53:20",
+            "certificateHash": null,
+            "statusAlias": "aprovado",
+            "status": "Aprovado",
+            "statusId": 263,
+            "migrated_user": false,
+            "email": "yakisoba0505c1@mailinator.com",
+            "name": "Yakisoba da Silva Sauro ED",
+            "username": "yakisoba0505c1@mailinator.com",
+            "branchName": "Nacional"
+        },
+        {
+            "uuid": "1ff1d79b-800e-4821-9b61-4d2036ddf9f9",
+            "id": 87919,
+            "statusUpdatedAt": "2026-05-20 17:04:37",
+            "certificateHash": null,
+            "statusAlias": "aprovado",
+            "status": "Aprovado",
+            "statusId": 263,
+            "email": "usuariocapacita23@gmail.com",
+            "name": "Usuário Validação DOT",
+            "username": "usuario.validacao",
+            "branchName": "Nacional"
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 1,
+    "total": 2
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "session_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/sessions/11106/users/all?page=1' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="search-course-enrollment" class="section">
+            <h1>Buscar Matrícula em Curso Avulso</h1>
+            <p>Busca o status e as informações de matrícula de um usuário específico em uma Sessão (Turma) de um curso, filtrando pelo <code>username</code>.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/sessions/{session_id}/users/all?query[name]={username}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID da sessão/turma pertencente ao curso (Ex: 11106).</td>
+                    </tr>
+                    <tr>
+                        <td><code>query[name]</code></td>
+                        <td>Query</td>
+                        <td><span class="required">Obrigatório.</span> O <i>username</i> exato do aluno para filtrar o registro (Ex: <code>usuario.validacao</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "uuid": "1ff1d79b-800e-4821-9b61-4d2036ddf9f9",
+            "id": 87919,
+            "statusUpdatedAt": "2026-05-20 17:04:37",
+            "certificateHash": null,
+            "statusAlias": "aprovado",
+            "status": "Aprovado",
+            "statusId": 263,
+            "migrated_user": false,
+            "groupName": null,
+            "email": "usuariocapacita23@gmail.com",
+            "name": "Usuário Validação DOT",
+            "username": "usuario.validacao",
+            "branchName": "Nacional"
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 1,
+    "total": 1
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "enrollment_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/sessions/11106/users/all?query[name]=usuario.validacao' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="certificate-download-course" class="section">
+            <h1>Download de Certificado de Curso</h1>
+            <p>Realiza o download do arquivo do certificado de conclusão referente a uma sessão/curso avulso. O sistema busca o histórico de aprovação validando o <code>certificate_hash</code> informado.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/myself/session/certificate/download/{certificate_hash}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> É recomendado enviar <code>application/pdf</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>certificate_hash</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O hash/UUID de validação único do certificado gerado no momento da conclusão.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            
+            <h3>200 OK (Sucesso)</h3>
+            <div class="success-box">
+                A requisição retorna o conteúdo binário do documento em <strong>PDF</strong>. Se o integrador estiver utilizando JavaScript (Axios/Fetch), é crucial configurar a resposta do HTTP Client para aceitar BLOB (ex: <code>responseType: 'blob'</code>).
+            </div>
+
+            <h3>404 Not Found</h3>
+            <p>Pode ocorrer caso o hash informado não exista, ou caso a camada de histórico não encontre dados atrelados àquele hash.</p>
+            <pre><code>{
+    "message": "hash_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/session/certificate/download/0a41a259-8a8a-46c4-bf9f-a334d5d07a62' \
+--header 'Accept: application/pdf' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="list-paths" class="section">
+            <h1>Listar Trilhas de Aprendizagem</h1>
+            <p>Retorna uma listagem paginada de todas as Trilhas disponíveis, trazendo na resposta estatísticas como contagem de cursos (<code>courses_count</code>) e matrículas (<code>enrollments_count</code>).</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de Query String</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Número da página para paginação (Ex: 1).</td>
+                    </tr>
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Quantidade de itens por página (Ex: 12).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados. (Ex: <code>enrollments_count,courses_count</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>order[created_at]</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Ordenação de retorno (Ex: <code>desc</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "id": 1100,
+            "name": "Trilha - Rematrícula",
+            "description": "Trilha - Rematrícula",
+            "duration": null,
+            "workload_value": 1500,
+            "workload_type": "i",
+            "is_published": true,
+            "reenrollment_allowed": false,
+            "paths_type": "presential",
+            "only_read_branch": false,
+            "branches": [
+                {
+                    "id": 46,
+                    "name": "Nacional",
+                    "parent_id": null
+                }
+            ],
+            "courses_count": 1,
+            "enrollments_count": 1
+        },
+        {
+            "id": 1098,
+            "name": "Trilha Integrada",
+            "workload_value": 600,
+            "workload_type": "i",
+            "is_published": true,
+            "reenrollment_allowed": false,
+            "paths_type": "distance",
+            "courses_count": 2,
+            "enrollments_count": 2
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": 2,
+    "firstPage": 1,
+    "lastPage": 15,
+    "total": 174
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "paths_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths?page=1&limit=12&embed=enrollments_count,courses_count' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="path-info" class="section">
+            <h1>Obter Dados de uma Trilha Específica</h1>
+            <p>Retorna os detalhes de uma trilha de aprendizagem específica. O sistema automaticamente padroniza a carga horária (<code>workload</code>) para ser sempre exibida em <strong>minutos</strong> no retorno.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths/{path_id}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL & Query</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>path_id</code> (URL)</td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da trilha (Ex: 3314).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed[]</code> (Query)</td>
+                        <td>Array</td>
+                        <td><span class="optional">Opcional.</span> Valores suportados: <code>categories</code>, <code>rating_analysis</code>, <code>user_rating</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>applicationUserId</code> (Query)</td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Obrigatório caso utilize o embed <code>user_rating</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 3314,
+    "name": "Gestão Orientada por Dados em Cooperativas",
+    "description": "Descubra como transformar dados em decisões...",
+    "duration": "P0Y0M45DT0H0M0S",
+    "isPublished": true,
+    "workload": {
+        "type": "i",
+        "value": 900 // Sempre convertido para minutos pelo sistema
+    },
+    "closedSession": false,
+    "reenrollmentAllowed": true
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths/3314' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="list-path-enrollments" class="section">
+            <h1>Listar Matrículas de uma Trilha</h1>
+            <p>Retorna a lista completa e paginada com as matrículas ativas em uma trilha específica.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths/{path_id}/enroll
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>path_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da trilha (Ex: 1065).</td>
+                    </tr>
+                    <tr>
+                        <td><code>page</code> e <code>limit</code></td>
+                        <td>Query</td>
+                        <td><span class="optional">Opcional.</span> Parâmetros para controle de paginação.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "i_paths_applications_users": 1917,
+            "i_paths": 1065,
+            "i_applications_users": 162633,
+            "enrollments_date": "2026-03-10T08:29:21-03:00",
+            "uuid": "3197328d-7c79-4467-973f-fb08da796058",
+            "name": "Usuario Validacao",
+            "email": "usuario.validacao@dotgroup.com.br",
+            "status": {
+                "id": 261,
+                "name": "Não iniciou",
+                "alias": "nao_iniciou"
+            },
+            "canReenroll": false,
+            "branchName": "PR"
+        },
+        {
+            "i_paths_applications_users": 1916,
+            "i_paths": 1065,
+            "i_applications_users": 182851,
+            "enrollments_date": "2026-03-06T08:25:46-03:00",
+            "uuid": "21d9f17e-2048-4ae7-bfd3-46a5548c3a22",
+            "name": "Aluno Teste",
+            "email": "xuzhen2817@uorak.com",
+            "status": {
+                "id": 262,
+                "name": "Em andamento",
+                "alias": "em_andamento"
+            },
+            "canReenroll": false,
+            "branchName": "ACENTRA"
+        }
+    ],
+    "actualPage": 1,
+    "total": 2
+}</code></pre>
+            
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "paths_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths/1065/enroll?page=1&limit=12' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="search-path-enrollment" class="section">
+            <h1>Buscar Matrícula na Trilha</h1>
+            <p>Busca e retorna as informações de matrícula de um usuário específico em uma trilha, filtrando a busca por e-mail e ativando a resposta formatada na versão V2.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths/{path_id}/enroll?query[email]={email_do_aluno}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>X-Accept-Version</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> Utilize o valor <code>v2</code> para garantir a estrutura correta de retorno da API para esta busca específica.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL & Query</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>path_id</code> (URL)</td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da trilha consultada (Ex: 3335).</td>
+                    </tr>
+                    <tr>
+                        <td><code>query[email]</code> (Query)</td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O e-mail do aluno para filtrar o registro de matrícula exato. (Ex: <code>aluno@email.com</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <p>O retorno injeta dados computados no momento da busca, como <code>canReEnroll</code> (calculado baseado nas regras da trilha) e <code>enrollDeadline</code> (baseado no primeiro acesso + duração da trilha).</p>
+            <pre><code>{
+    "items": [
+        {
+            "id": 512312,
+            "path_id": 3335,
+            "application_user_id": 7545345,
+            "name": "Nome do Aluno",
+            "email": "aluno@email.com",
+            "status": {
+                "id": 513,
+                "name": "Aprovado",
+                "alias": "aprovado"
+            },
+            "canReEnroll": false,
+            "enrollDeadline": "2026-12-31T23:59:59+00:00",
+            "certificate_issued_at": "2026-05-19T10:00:00+00:00",
+            "certificate_downloaded_at": null,
+            "groups": []
+        }
+    ]
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths/3335/enroll?query[email]=aluno@email.com' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI' \
+--header 'X-Accept-Version: v2'</code></pre>
+        </div>
+
+
+        <div id="certificate-download-path" class="section">
+            <h1>Download de Certificado de Trilha</h1>
+            <p>Realiza o download do arquivo do certificado. O sistema busca o histórico de aprovação validando o <code>certificate_hash</code> informado.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/myself/path/certificate/download/{certificate_hash}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> É recomendado enviar <code>application/pdf</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>certificate_hash</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O hash/UUID de validação único do certificado gerado no momento da conclusão da trilha.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            
+            <h3>200 OK (Sucesso)</h3>
+            <div class="success-box">
+                A requisição retorna o conteúdo binário do documento em <strong>PDF</strong>. Se o integrador estiver utilizando JavaScript (Axios/Fetch), é crucial configurar a resposta do HTTP Client para aceitar BLOB (ex: <code>responseType: 'blob'</code>).
+            </div>
+
+            <h3>404 Not Found</h3>
+            <p>Pode ocorrer caso o hash informado não exista, ou caso a camada de histórico não encontre dados atrelados àquele hash.</p>
+            <pre><code>{
+    "message": "hash_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/path/certificate/download/574fbb2f-13fa-49b2-b4b8-4cab80165fea' \
+--header 'Accept: application/pdf' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Esconder todas as seções
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            
+            // Remover 'active' de todos os itens do menu
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // Mostrar a seção clicada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Adicionar 'active' no item do menu clicado baseado na função de click
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Studion Sescoop - Documentação SAP da COMIGO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+   <style>
+        :root {
+            /* Cores oficiais do Guia Pocket DOT */
+            --dot-green: #768900;       /* Maçã Verde */
+            --dot-black: #0C0A08;       /* Preto Esfumado */
+            --dot-white: #FDFDFD;       /* Fumaça Branca */
+            --sidebar-bg: #4A4A4A;
+            --sidebar-text: #FDFDFD;
+            --text-color: #0C0A08;
+            --code-bg: #1A1A1A;
+            --code-text: #FDFDFD;
+            --border-color: #E2E2E2;
+            --method-get: #0C0A08;      /* GET em Preto conforme minimalismo do guia */
+            --method-post: #768900;     /* POST em Verde DOT */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif; /* Tipografia oficial */
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            background-color: var(--dot-white);
+            color: var(--text-color);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-right: 4px solid var(--dot-green); /* Detalhe em verde */
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(253, 253, 253, 0.1);
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        .nav-group-title {
+            padding: 15px 20px 5px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #b5cc18; /* Verde mais claro para dar contraste no fundo cinza */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-weight: 300; /* Lato Light */
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(118, 137, 0, 0.15);
+            font-weight: 400; /* Lato Regular */
+            color: #d1ec15;
+        }
+
+        .nav-item.active {
+            border-left: 5px solid var(--dot-green);
+        }
+
+        .method-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 3px;
+            margin-right: 12px;
+            color: white;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .method-badge.get { background-color: var(--method-get); }
+        .method-badge.post { background-color: var(--method-post); }
+        .method-badge.info { background-color: var(--dot-green); }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 50px 60px;
+            overflow-y: auto;
+            background-color: var(--dot-white);
+        }
+
+        .section {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { margin-bottom: 15px; font-size: 2.4rem; color: var(--dot-black); font-weight: 700; border-bottom: 2px solid var(--dot-green);}
+        h2 { margin: 40px 0 20px; font-size: 1.6rem; color: var(--dot-green); font-weight: 400; }
+        h3 { margin: 25px 0 15px; font-size: 1.2rem; font-weight: 700; }
+        p { line-height: 1.7; margin-bottom: 15px; color: #444; font-weight: 400; }
+
+        .endpoint-url {
+            display: flex;
+            align-items: center;
+            background-color: #F0F0F0;
+            padding: 18px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--dot-black);
+        }
+
+        .endpoint-url .method-badge { font-size: 0.8rem; margin-right: 15px; }
+
+        .server-url-box {
+            background-color: #F0F0F0;
+            padding: 15px 20px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--dot-black);
+            border-left: 5px solid var(--dot-green);
+            margin: 15px 0 25px 0;
+            font-weight: 700;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th { background-color: #F8F8F8; color: var(--dot-black); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; }
+        
+        .required { color: #d9534f; font-weight: bold;}
+        .optional { color: #5bc0de; font-weight: bold;}
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin-bottom: 25px;
+            border: 1px solid #333;
+        }
+
+        code { font-family: 'Courier New', Courier, monospace; }
+
+        /* Boxes de Mensagem no Estilo DOT */
+        .alert-box {
+            background-color: #f4f4f4;
+            border-left: 4px solid var(--dot-black);
+            padding: 20px;
+            margin-bottom: 25px;
+            color: var(--dot-black);
+        }
+
+        .warning-box {
+            background-color: rgba(118, 137, 0, 0.05);
+            border-left: 4px solid var(--dot-green);
+            padding: 20px;
+            margin-bottom: 25px;
+            color: #4a5600;
+        }
+
+        .success-box {
+            background-color: #eef5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            margin-bottom: 25px;
+            color: #2e7d32;
+        }
+
+        ul { margin-bottom: 20px; padding-left: 20px; line-height: 1.8; }
+        li { margin-bottom: 8px; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            API Studion.mx <br>
+            <span style="font-size: 0.7rem; font-weight: 500; color: #b5cc18;">DOT Digital Group</span>
+        </div>
+        <ul class="nav-list" id="navList">
+            <li class="nav-item active" onclick="showSection('intro')">
+                <span class="method-badge info">INFO</span> Introdução
+            </li>
+            <li class="nav-item" onclick="showSection('auth')">
+                <span class="method-badge post">POST</span> Autenticação
+            </li>
+            <li class="nav-item" onclick="showSection('user-info')">
+                <span class="method-badge get">GET</span> Info do Usuário
+            </li>
+            
+            <div class="nav-group-title">Cursos Avulsos</div>
+            <li class="nav-item" onclick="showSection('list-courses')">
+                <span class="method-badge get">GET</span> Listar Cursos
+            </li>
+            <li class="nav-item" onclick="showSection('course-info')">
+                <span class="method-badge get">GET</span> Info do Curso
+            </li>
+            <li class="nav-item" onclick="showSection('list-course-enrollments')">
+                <span class="method-badge get">GET</span> Listar Matrículas
+            </li>
+            <li class="nav-item" onclick="showSection('search-course-enrollment')">
+                <span class="method-badge get">GET</span> Buscar Matrícula
+            </li>
+            <li class="nav-item" onclick="showSection('certificate-download-course')">
+                <span class="method-badge get">GET</span> Baixar Certificado
+            </li>
+
+            <div class="nav-group-title">Trilhas de Aprendizagem</div>
+            <li class="nav-item" onclick="showSection('list-paths')">
+                <span class="method-badge get">GET</span> Listar Trilhas
+            </li>
+            <li class="nav-item" onclick="showSection('path-info')">
+                <span class="method-badge get">GET</span> Info da Trilha
+            </li>
+            <li class="nav-item" onclick="showSection('list-path-enrollments')">
+                <span class="method-badge get">GET</span> Listar Matrículas
+            </li>
+            <li class="nav-item" onclick="showSection('search-path-enrollment')">
+                <span class="method-badge get">GET</span> Buscar Matrícula
+            </li>
+            <li class="nav-item" onclick="showSection('certificate-download-path')">
+                <span class="method-badge get">GET</span> Baixar Certificado
+            </li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        
+        <div id="intro" class="section active">
+            <h1>Visão Geral da Integração</h1>
+            <p>Seja bem-vindo à documentação base de integração entre os sistemas <strong>SAP da COMIGO</strong> e a plataforma <strong>Studion.mx</strong>, desenvolvida pela <strong>DOT Digital Group</strong>.</p>
+            <p>Este documento serve como guia técnico para orientar a equipe de engenharia no consumo dos serviços de consulta de cursos, trilhas e o status de matrículas dos usuários. Todos os endpoints mapeados no menu lateral correspondem estritamente aos escopos e fluxos combinados e acordados no documento técnico inicial do projeto.</p>
+            
+            <h2>URL Base (Host)</h2>
+            <p>Para realizar as requisições de teste e homologação do projeto, utilize o seguinte endereço de servidor:</p>
+            
+            <div class="server-url-box">
+                https://api-studion-sescoop.hom.dotgroup.com.br
+            </div>
+
+            <div class="warning-box">
+                <strong>📝 Nota Importante sobre as Rotas:</strong> A URL base descrita acima deve, obrigatoriamente, anteceder (ficar antes) de todos os caminhos relativos dos endpoints listados nesta documentação. 
+                <br><br>
+                <em>Exemplo prático:</em> Se o endpoint de autenticação está mapeado como <code>/api/login_check</code>, a requisição final contendo o Host completo deverá ser disparada para:
+                <br>
+                <code>https://api-studion-sescoop.hom.dotgroup.com.br/api/login_check</code>
+            </div>
+
+            <h2>Fluxo de Integração Sugerido</h2>
+            <p>Para um consumo correto e ordenado dos endpoints, recomendamos seguir a seguinte esteira lógica de desenvolvimento:</p>
+            <ul>
+                <li><strong>1. Autenticação:</strong> Realize a chamada enviando as credenciais para obter o Bearer Token (JWT).</li>
+                <li><strong>2. Listagens e Consultas:</strong> Navegue pela estrutura de Cursos e Trilhas utilizando os IDs para buscar informações detalhadas.</li>
+                <li><strong>3. Validação de Matrícula:</strong> Utilize os endpoints de busca passando parâmetros como <code>email</code> ou <code>username</code> para verificar o status e o progresso do usuário no respectivo conteúdo.</li>
+            </ul>
+        </div>
+
+        <div id="auth" class="section">
+            <h1>Autenticar Usuário</h1>
+            <p>Gera os tokens de acesso (Access Token) e de atualização (Refresh Token) a partir das credenciais do usuário. Este token será necessário para autenticar as requisições nos demais endpoints protegidos da API.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge post">POST</span>
+                /api/login_check
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Content-Type</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> Valor deve ser <code>application/x-www-form-urlencoded</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>⚠️ Atenção:</strong> Certifique-se de enviar os dados no formato <code>x-www-form-urlencoded</code>. Enviar como <code>application/json</code> resultará em erro.
+            </div>
+
+            <h2>Corpo da Requisição</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>_username</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O e-mail de acesso do usuário.</td>
+                    </tr>
+                    <tr>
+                        <td><code>_password</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> A senha de acesso do usuário.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "token": "eyJhbGciOiJSUzI1NiIsInR5...[JWT Omitido]",
+    "refresh_token": "eyJhbGciOiJIUzUxMiIsInR5...[Refresh Token Omitido]"
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/login_check' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode '_username=SEU_USUARIO' \
+--data-urlencode '_password=SUA_SENHA'</code></pre>
+        </div>
+
+        <div id="user-info" class="section">
+            <h1>Buscar Usuário por E-mail</h1>
+            <p>Retorna as informações detalhadas de um usuário cadastrado a partir do seu <code>e-mail</code>.</p>
+            
+            <div class="alert-box">
+                <strong>💡 Nota de Cache:</strong> Os dados de retorno deste endpoint passam por um mecanismo de cache interno com duração de até 1 semana. Alterações muito recentes no cadastro do usuário podem ter um leve atraso de sincronização nesta chamada.
+            </div>
+
+            <div class="warning-box">
+                <strong>🔑 Importante:</strong> Esta requisição retorna o campo <code>uuid</code>. O valor deste campo será obrigatório para realizar a matrícula do usuário em uma trilha ou curso.
+            </div>
+
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/users/email/{email}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>email</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O E-mail do usuário (Ex: usuarioemail@mail.com).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 919555,
+    "active": true,
+    "uuid": "a3a2ecb1-1c5c-4494-9d8a-66905789af09",
+    "profiles": [
+        { "id": 249, "name": "Admin", "alias": "admin" },
+        { "id": 250, "name": "Student", "alias": "student" }
+    ],
+    "meta": {
+        "vinculo_com_o_cooperativismo": 1,
+        "telefone": "11999999999"
+    }
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <p>Retornado caso o usuário não exista no banco de dados.</p>
+            <pre><code>{
+    "message": "user_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/users/email/usuarioemail@mail.com' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="list-courses" class="section">
+            <h1>Listar Cursos Avulsos Gerais</h1>
+            <p>Retorna uma listagem paginada de todos os cursos disponíveis na plataforma, com a possibilidade de incluir metadados adicionais.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/courses
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de Query String</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Número da página para paginação (Ex: 1).</td>
+                    </tr>
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Quantidade de itens por página (Ex: 12).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados extras no retorno (Ex: <code>categories,branches,meta</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>order[created_at]</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Ordenação de retorno (Ex: <code>desc</code> ou <code>asc</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "id": 152,
+            "studentShow": false,
+            "meta": {
+                "id": 158,
+                "alias": "objetivo_estrategico",
+                "name": "Objetivo Estratégico",
+                "type": {
+                    "id": 446,
+                    "alias": "select"
+                }
+            },
+            "entity": {
+                "id": 2,
+                "alias": "course",
+                "tableName": "courses"
+            },
+            "parameters": {
+                "required": false,
+                "options": [
+                    {
+                        "id": 1,
+                        "fields": { "name": "Fortalecer a cultura cooperativista" }
+                    }
+                ]
+            }
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 1,
+    "total": 7
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "course_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/courses?page=1&limit=12&embed=categories,branches,meta' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="course-info" class="section">
+            <h1>Obter Dados de um Curso Específico</h1>
+            <p>Retorna todas as informações detalhadas e estruturais de um curso (ex: regras, filiais atendidas, carga horária e metadados).</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/courses/{course_id}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL & Query</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>course_id</code> (URL)</td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico do curso (Ex: 63875).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code> (Query)</td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Campos adicionais suportados, separados por vírgula (Ex: <code>bidding_meta,branches_sessions</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 63875,
+    "name": "Curso - Rematrícula",
+    "active": true,
+    "duration": {
+        "value": 4800,
+        "type": "i",
+        "hours": 80.0,
+        "minutes": 4800
+    },
+    "workload": {
+        "type": "i",
+        "value": 4800
+    },
+    "rules": [
+        {
+            "id": 685230,
+            "name": "Generated rule for course 63875",
+            "type": {
+                "name": "Conclusão",
+                "alias": "conclusion"
+            },
+            "active": true
+        }
+    ],
+    "finalStatus": {
+        "id": 264,
+        "name": "Reprovado",
+        "alias": "reprovado"
+    },
+    "certificate": {
+        "id": 60,
+        "type": "conclusion"
+    },
+    "branches": [
+        {
+            "id": 46,
+            "name": "Nacional",
+            "materializedPath": "46",
+            "materializedPathChildrens": "46, 53, 55, 56 ... [Nós Omitidos para Brevidade]"
+        }
+    ],
+    "onboardingDays": 0,
+    "_embedded": {
+        "meta": {
+            "modalidade": 1,
+            "ofertante": 1
+        }
+    }
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "course_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/courses/63875?embed=bidding_meta,branches_sessions' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="list-course-enrollments" class="section">
+            <h1>Listar Matrículas de um Curso Avulso</h1>
+            <p>Lista todas as matrículas contidas em uma "Sessão" (turma) de um curso avulso específico.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/sessions/{session_id}/users/all
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID da sessão/turma pertencente ao curso (Ex: 11106).</td>
+                    </tr>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Query</td>
+                        <td><span class="optional">Opcional.</span> Número da página para consulta.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "uuid": "e5d18fb5-7e0d-4613-8419-8de130447100",
+            "id": 87911,
+            "statusUpdatedAt": "2026-05-20 12:53:20",
+            "certificateHash": null,
+            "statusAlias": "aprovado",
+            "status": "Aprovado",
+            "statusId": 263,
+            "migrated_user": false,
+            "email": "yakisoba0505c1@mailinator.com",
+            "name": "Yakisoba da Silva Sauro ED",
+            "username": "yakisoba0505c1@mailinator.com",
+            "branchName": "Nacional"
+        },
+        {
+            "uuid": "1ff1d79b-800e-4821-9b61-4d2036ddf9f9",
+            "id": 87919,
+            "statusUpdatedAt": "2026-05-20 17:04:37",
+            "certificateHash": null,
+            "statusAlias": "aprovado",
+            "status": "Aprovado",
+            "statusId": 263,
+            "email": "usuariocapacita23@gmail.com",
+            "name": "Usuário Validação DOT",
+            "username": "usuario.validacao",
+            "branchName": "Nacional"
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 1,
+    "total": 2
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "session_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/sessions/11106/users/all?page=1' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="search-course-enrollment" class="section">
+            <h1>Buscar Matrícula em Curso Avulso</h1>
+            <p>Busca o status e as informações de matrícula de um usuário específico em uma Sessão (Turma) de um curso, filtrando pelo <code>username</code>.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/sessions/{session_id}/users/all?query[name]={username}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID da sessão/turma pertencente ao curso (Ex: 11106).</td>
+                    </tr>
+                    <tr>
+                        <td><code>query[name]</code></td>
+                        <td>Query</td>
+                        <td><span class="required">Obrigatório.</span> O <i>username</i> exato do aluno para filtrar o registro (Ex: <code>usuario.validacao</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "uuid": "1ff1d79b-800e-4821-9b61-4d2036ddf9f9",
+            "id": 87919,
+            "statusUpdatedAt": "2026-05-20 17:04:37",
+            "certificateHash": null,
+            "statusAlias": "aprovado",
+            "status": "Aprovado",
+            "statusId": 263,
+            "migrated_user": false,
+            "groupName": null,
+            "email": "usuariocapacita23@gmail.com",
+            "name": "Usuário Validação DOT",
+            "username": "usuario.validacao",
+            "branchName": "Nacional"
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 1,
+    "total": 1
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "enrollment_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/sessions/11106/users/all?query[name]=usuario.validacao' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="certificate-download-course" class="section">
+            <h1>Download de Certificado de Curso</h1>
+            <p>Realiza o download do arquivo do certificado de conclusão referente a uma sessão/curso avulso. O sistema busca o histórico de aprovação validando o <code>certificate_hash</code> informado.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/myself/session/certificate/download/{certificate_hash}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> É recomendado enviar <code>application/pdf</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>certificate_hash</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O hash/UUID de validação único do certificado gerado no momento da conclusão.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            
+            <h3>200 OK (Sucesso)</h3>
+            <div class="success-box">
+                A requisição retorna o conteúdo binário do documento em <strong>PDF</strong>. Se o integrador estiver utilizando JavaScript (Axios/Fetch), é crucial configurar a resposta do HTTP Client para aceitar BLOB (ex: <code>responseType: 'blob'</code>).
+            </div>
+
+            <h3>404 Not Found</h3>
+            <p>Pode ocorrer caso o hash informado não exista, ou caso a camada de histórico não encontre dados atrelados àquele hash.</p>
+            <pre><code>{
+    "message": "hash_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/session/certificate/download/0a41a259-8a8a-46c4-bf9f-a334d5d07a62' \
+--header 'Accept: application/pdf' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="list-paths" class="section">
+            <h1>Listar Trilhas de Aprendizagem</h1>
+            <p>Retorna uma listagem paginada de todas as Trilhas disponíveis, trazendo na resposta estatísticas como contagem de cursos (<code>courses_count</code>) e matrículas (<code>enrollments_count</code>).</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de Query String</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Número da página para paginação (Ex: 1).</td>
+                    </tr>
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Quantidade de itens por página (Ex: 12).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados. (Ex: <code>enrollments_count,courses_count</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>order[created_at]</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Ordenação de retorno (Ex: <code>desc</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "id": 1100,
+            "name": "Trilha - Rematrícula",
+            "description": "Trilha - Rematrícula",
+            "duration": null,
+            "workload_value": 1500,
+            "workload_type": "i",
+            "is_published": true,
+            "reenrollment_allowed": false,
+            "paths_type": "presential",
+            "only_read_branch": false,
+            "branches": [
+                {
+                    "id": 46,
+                    "name": "Nacional",
+                    "parent_id": null
+                }
+            ],
+            "courses_count": 1,
+            "enrollments_count": 1
+        },
+        {
+            "id": 1098,
+            "name": "Trilha Integrada",
+            "workload_value": 600,
+            "workload_type": "i",
+            "is_published": true,
+            "reenrollment_allowed": false,
+            "paths_type": "distance",
+            "courses_count": 2,
+            "enrollments_count": 2
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": 2,
+    "firstPage": 1,
+    "lastPage": 15,
+    "total": 174
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "paths_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths?page=1&limit=12&embed=enrollments_count,courses_count' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="path-info" class="section">
+            <h1>Obter Dados de uma Trilha Específica</h1>
+            <p>Retorna os detalhes de uma trilha de aprendizagem específica. O sistema automaticamente padroniza a carga horária (<code>workload</code>) para ser sempre exibida em <strong>minutos</strong> no retorno.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths/{path_id}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL & Query</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>path_id</code> (URL)</td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da trilha (Ex: 3314).</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed[]</code> (Query)</td>
+                        <td>Array</td>
+                        <td><span class="optional">Opcional.</span> Valores suportados: <code>categories</code>, <code>rating_analysis</code>, <code>user_rating</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>applicationUserId</code> (Query)</td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Obrigatório caso utilize o embed <code>user_rating</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 3314,
+    "name": "Gestão Orientada por Dados em Cooperativas",
+    "description": "Descubra como transformar dados em decisões...",
+    "duration": "P0Y0M45DT0H0M0S",
+    "isPublished": true,
+    "workload": {
+        "type": "i",
+        "value": 900 // Sempre convertido para minutos pelo sistema
+    },
+    "closedSession": false,
+    "reenrollmentAllowed": true
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths/3314' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="list-path-enrollments" class="section">
+            <h1>Listar Matrículas de uma Trilha</h1>
+            <p>Retorna a lista completa e paginada com as matrículas ativas em uma trilha específica.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths/{path_id}/enroll
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>path_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da trilha (Ex: 1065).</td>
+                    </tr>
+                    <tr>
+                        <td><code>page</code> e <code>limit</code></td>
+                        <td>Query</td>
+                        <td><span class="optional">Opcional.</span> Parâmetros para controle de paginação.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "i_paths_applications_users": 1917,
+            "i_paths": 1065,
+            "i_applications_users": 162633,
+            "enrollments_date": "2026-03-10T08:29:21-03:00",
+            "uuid": "3197328d-7c79-4467-973f-fb08da796058",
+            "name": "Usuario Validacao",
+            "email": "usuario.validacao@dotgroup.com.br",
+            "status": {
+                "id": 261,
+                "name": "Não iniciou",
+                "alias": "nao_iniciou"
+            },
+            "canReenroll": false,
+            "branchName": "PR"
+        },
+        {
+            "i_paths_applications_users": 1916,
+            "i_paths": 1065,
+            "i_applications_users": 182851,
+            "enrollments_date": "2026-03-06T08:25:46-03:00",
+            "uuid": "21d9f17e-2048-4ae7-bfd3-46a5548c3a22",
+            "name": "Aluno Teste",
+            "email": "xuzhen2817@uorak.com",
+            "status": {
+                "id": 262,
+                "name": "Em andamento",
+                "alias": "em_andamento"
+            },
+            "canReenroll": false,
+            "branchName": "ACENTRA"
+        }
+    ],
+    "actualPage": 1,
+    "total": 2
+}</code></pre>
+            
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "paths_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths/1065/enroll?page=1&limit=12' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+        <div id="search-path-enrollment" class="section">
+            <h1>Buscar Matrícula na Trilha</h1>
+            <p>Busca e retorna as informações de matrícula de um usuário específico em uma trilha, filtrando a busca por e-mail e ativando a resposta formatada na versão V2.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/paths/{path_id}/enroll?query[email]={email_do_aluno}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>X-Accept-Version</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> Utilize o valor <code>v2</code> para garantir a estrutura correta de retorno da API para esta busca específica.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL & Query</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>path_id</code> (URL)</td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da trilha consultada (Ex: 3335).</td>
+                    </tr>
+                    <tr>
+                        <td><code>query[email]</code> (Query)</td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O e-mail do aluno para filtrar o registro de matrícula exato. (Ex: <code>aluno@email.com</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <p>O retorno injeta dados computados no momento da busca, como <code>canReEnroll</code> (calculado baseado nas regras da trilha) e <code>enrollDeadline</code> (baseado no primeiro acesso + duração da trilha).</p>
+            <pre><code>{
+    "items": [
+        {
+            "id": 512312,
+            "path_id": 3335,
+            "application_user_id": 7545345,
+            "name": "Nome do Aluno",
+            "email": "aluno@email.com",
+            "status": {
+                "id": 513,
+                "name": "Aprovado",
+                "alias": "aprovado"
+            },
+            "canReEnroll": false,
+            "enrollDeadline": "2026-12-31T23:59:59+00:00",
+            "certificate_issued_at": "2026-05-19T10:00:00+00:00",
+            "certificate_downloaded_at": null,
+            "groups": []
+        }
+    ]
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths/3335/enroll?query[email]=aluno@email.com' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI' \
+--header 'X-Accept-Version: v2'</code></pre>
+        </div>
+
+
+        <div id="certificate-download-path" class="section">
+            <h1>Download de Certificado de Trilha</h1>
+            <p>Realiza o download do arquivo do certificado. O sistema busca o histórico de aprovação validando o <code>certificate_hash</code> informado.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/myself/path/certificate/download/{certificate_hash}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> É recomendado enviar <code>application/pdf</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>certificate_hash</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O hash/UUID de validação único do certificado gerado no momento da conclusão da trilha.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            
+            <h3>200 OK (Sucesso)</h3>
+            <div class="success-box">
+                A requisição retorna o conteúdo binário do documento em <strong>PDF</strong>. Se o integrador estiver utilizando JavaScript (Axios/Fetch), é crucial configurar a resposta do HTTP Client para aceitar BLOB (ex: <code>responseType: 'blob'</code>).
+            </div>
+
+            <h3>404 Not Found</h3>
+            <p>Pode ocorrer caso o hash informado não exista, ou caso a camada de histórico não encontre dados atrelados àquele hash.</p>
+            <pre><code>{
+    "message": "hash_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/path/certificate/download/574fbb2f-13fa-49b2-b4b8-4cab80165fea' \
+--header 'Accept: application/pdf' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Esconder todas as seções
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            
+            // Remover 'active' de todos os itens do menu
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // Mostrar a seção clicada
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Adicionar 'active' no item do menu clicado baseado na função de click
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
