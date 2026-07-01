@@ -22,6 +22,7 @@
             --border-color: #E2E2E2;
             --method-get: #0C0A08;      /* GET em Preto conforme minimalismo do guia */
             --method-post: #768900;     /* POST em Verde DOT */
+            --method-put: #f39c12;      /* PUT em Laranja para destaque */
         }
 
         * {
@@ -104,6 +105,7 @@
 
         .method-badge.get { background-color: var(--method-get); }
         .method-badge.post { background-color: var(--method-post); }
+        .method-badge.put { background-color: var(--method-put); }
         .method-badge.info { background-color: var(--dot-green); }
 
         /* Main Content Styles */
@@ -231,11 +233,16 @@
             <li class="nav-item active" onclick="showSection('intro')">
                 <span class="method-badge info">INFO</span> Introdução
             </li>
+            
+            <div class="nav-group-title">Autenticação e Usuário</div>
             <li class="nav-item" onclick="showSection('auth')">
                 <span class="method-badge post">POST</span> Autenticação
             </li>
             <li class="nav-item" onclick="showSection('user-info')">
                 <span class="method-badge get">GET</span> Info do Usuário
+            </li>
+            <li class="nav-item" onclick="showSection('update-user-meta')">
+                <span class="method-badge put">PUT</span> Atualizar Metadados
             </li>
             
             <div class="nav-group-title">Cursos Avulsos</div>
@@ -414,7 +421,10 @@
     ],
     "meta": {
         "vinculo_com_o_cooperativismo": 1,
-        "telefone": "11999999999"
+        "telefone": "11999999999",
+        "telefone_principal": "11333333333",
+        "data_de_nascimento": "1992-01-01",
+        "genero": 4
     }
 }</code></pre>
 
@@ -430,10 +440,118 @@
 --header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
         </div>
 
+        <div id="update-user-meta" class="section">
+            <h1>Atualizar Metadados do Usuário</h1>
+            <p>Permite que o usuário autenticado modifique dinamicamente seus próprios metadados no sistema. Este endpoint possui escopo amplo, permitindo a atualização tanto de metadados globais de perfil do próprio usuário (<code>application_user</code>) quanto de metadados focados em sua ramificação/polo estrutural (<code>branch_user</code>).</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge put">PUT</span>
+                /api/myself/metas/user-metas
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Content-Type</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> Deve ser enviado como <code>application/json</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Corpo da Requisição (JSON Payload)</h2>
+            <p>O payload consiste em um array chamado <code>user_meta_values</code>. É possível encapsular diferentes entidades no mesmo envio:</p>
+            
+            <h3>Mapeamento de Entidades Disponíveis:</h3>
+            <ul>
+                <li><strong>application_user:</strong> Modifica metadados pessoais diretos como <code>data_de_nascimento</code> (YYYY-MM-DD), <code>genero</code> (ID inteiro do gênero), <code>telefone</code>, <code>telefone_principal</code>, entre outros. Em ambiente de homologação, utilize o ID fixado do usuário de testes (Ex: <code>70752</code>).</li>
+                <li><strong>branch_user:</strong> Modifica metadados associados ao polo ou vínculo cooperativo, como o alias <code>vinculo_com_o_cooperativismo</code>. Em homologação, utilize sempre o ID estrutural do meta correspondente (Ex: <code>21339</code>).</li>
+            </ul>
+
+            <pre><code>{
+    "user_meta_values": [
+        {
+            "values": {
+                "data_de_nascimento": "1992-01-01",
+                "genero": 4,
+                "telefone_principal": "(19) 9999-9998",
+                "telefone": "(19) 99999-9999",
+                "nome_responsavel": "",
+                "email_responsavel": "",
+                "cpf_responsavel": "",
+                "blocked": false,
+                "data_de_nascimento_do_responsavel": null,
+                "celular_do_responsavel": null
+            },
+            "entity": "application_user",
+            "id": 70752
+        },
+        {
+            "values": {
+                "vinculo_com_o_cooperativismo": 2
+            },
+            "entity": "branch_user",
+            "id": 21339
+        }
+    ]
+}</code></pre>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <p>Retorna uma coleção aninhada detalhando os metadados salvos, acompanhados de suas respectivas regras de validação e opções de dicionário disponíveis.</p>
+            <pre><code>[
+    [
+        {
+            "alias": "vinculo_com_o_cooperativismo",
+            "name": "Vínculo com o cooperativismo",
+            "type": "select",
+            "value": 2,
+            "options": [
+                { "id": 1, "fields": { "name": "Cooperado" } },
+                { "id": 2, "fields": { "name": "Empregado de Cooperativa" } },
+                { "id": 3, "fields": { "name": "Dirigente Eleito de Cooperativa" } },
+                { "id": 4, "fields": { "name": "Familiar de Cooperado" } },
+                { "id": 6, "fields": { "name": "Comunidade - sem vínculo com o cooperativismo" } }
+            ],
+            "parameters": {
+                "required": false,
+                "length": null
+            },
+            "id": 473
+        }
+    ]
+]</code></pre>
+
+            <h3>500 Internal Server Error (Erro de Validação)</h3>
+            <p>Retornado caso alguma opção de metadado (como chaves de selects de sistema) seja transmitida com valores fora do mapeamento aceito.</p>
+            <pre><code>{
+    "code": 500,
+    "message": "validation_error",
+    "hint": {
+        "errors": {
+            "vinculo_com_o_cooperativismo": "invalid_option"
+        }
+    }
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location --request PUT 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/metas/user-metas' \
+--header 'Content-Type: application/json;charset=UTF-8' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI' \
+--data-raw '{"user_meta_values":[{"values":{"data_de_nascimento":"1992-01-01","genero":4,"telefone_principal":"(19) 9999-9998","nome_responsavel":"","email_responsavel":"","cpf_responsavel":"","blocked":false,"telefone":"(19) 99999-9999","data_de_nascimento_do_responsavel":null,"celular_do_responsavel":null},"entity":"application_user","id":70752},{"values":{"vinculo_com_o_cooperativismo":2},"entity":"branch_user","id":21339}]}'</code></pre>
+        </div>
+
 
         <div id="list-courses" class="section">
             <h1>Listar Cursos Avulsos Gerais</h1>
-            <p>Retorna uma listagem paginada de todos os cursos disponíveis na plataforma, com a possibilidade de incluir metadados adicionais.</p>
+            <p>Retorna uma listagem paginada de todos os cursos disponíveis na plataforma. Utilizando a Query String, é possível aplicar filtros granulares por categorias (ex: segmentação por polos regionais ou escopo Nacional) e requisitar mais informações (<code>embed</code>) de relacionamentos.</p>
             
             <div class="endpoint-url">
                 <span class="method-badge get">GET</span>
@@ -457,6 +575,16 @@
                 <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
                 <tbody>
                     <tr>
+                        <td><code>filter[categories][0]</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Filtra os cursos baseando-se no ID interno da categoria desejada. Por exemplo, passar o valor <code>34</code> restringirá o retorno aos conteúdos publicados especificamente no escopo de um publico específico cadastrado em homolog.</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Permite embutir dados e objetos extras diretamente no corpo da resposta (Ex: <code>categories,branches,meta</code>). É altamente recomendado passar <code>categories</code> para receber a taxonomia associada ao curso.</td>
+                    </tr>
+                    <tr>
                         <td><code>page</code></td>
                         <td>Integer</td>
                         <td><span class="optional">Opcional.</span> Número da página para paginação (Ex: 1).</td>
@@ -465,11 +593,6 @@
                         <td><code>limit</code></td>
                         <td>Integer</td>
                         <td><span class="optional">Opcional.</span> Quantidade de itens por página (Ex: 12).</td>
-                    </tr>
-                    <tr>
-                        <td><code>embed</code></td>
-                        <td>String</td>
-                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados extras no retorno (Ex: <code>categories,branches,meta</code>).</td>
                     </tr>
                     <tr>
                         <td><code>order[created_at]</code></td>
@@ -526,7 +649,7 @@
 }</code></pre>
 
             <h2>Exemplo cURL</h2>
-            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/courses?page=1&limit=12&embed=categories,branches,meta' \
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/courses?filter[categories][0]=34&order[created_at]=desc&page=1&limit=12&embed=categories,branches,meta' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
         </div>
@@ -863,7 +986,7 @@
 
         <div id="list-paths" class="section">
             <h1>Listar Trilhas de Aprendizagem</h1>
-            <p>Retorna uma listagem paginada de todas as Trilhas disponíveis, trazendo na resposta estatísticas como contagem de cursos (<code>courses_count</code>) e matrículas (<code>enrollments_count</code>).</p>
+            <p>Retorna uma listagem paginada de todas as Trilhas disponíveis. Permite a filtragem por categorias via Query String para focar em contextos específicos (como conteúdos publicados para o escopo Nacional) e embutir dados analíticos associados.</p>
             
             <div class="endpoint-url">
                 <span class="method-badge get">GET</span>
@@ -887,6 +1010,16 @@
                 <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
                 <tbody>
                     <tr>
+                        <td><code>filter[categories][0]</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Filtra as trilhas baseando-se no ID numérico da categoria cadastrada no sistema. Informar o ID <code>34</code> restringirá a resposta aos elementos publicados sob a governança Nacional.</td>
+                    </tr>
+                    <tr>
+                        <td><code>embed</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados complementares (Ex: <code>enrollments_count,courses_count</code>).</td>
+                    </tr>
+                    <tr>
                         <td><code>page</code></td>
                         <td>Integer</td>
                         <td><span class="optional">Opcional.</span> Número da página para paginação (Ex: 1).</td>
@@ -895,11 +1028,6 @@
                         <td><code>limit</code></td>
                         <td>Integer</td>
                         <td><span class="optional">Opcional.</span> Quantidade de itens por página (Ex: 12).</td>
-                    </tr>
-                    <tr>
-                        <td><code>embed</code></td>
-                        <td>String</td>
-                        <td><span class="optional">Opcional.</span> Permite incluir blocos de dados. (Ex: <code>enrollments_count,courses_count</code>).</td>
                     </tr>
                     <tr>
                         <td><code>order[created_at]</code></td>
@@ -960,7 +1088,7 @@
 }</code></pre>
 
             <h2>Exemplo cURL</h2>
-            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths?page=1&limit=12&embed=enrollments_count,courses_count' \
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/paths?filter[categories][0]=34&order[created_at]=desc&page=1&limit=12&embed=enrollments_count,courses_count' \
 --header 'Accept: application/json' \
 --header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
         </div>
