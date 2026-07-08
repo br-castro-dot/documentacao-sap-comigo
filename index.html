@@ -262,7 +262,7 @@
                 <span class="method-badge get">GET</span> Baixar Certificado
             </li>
 
-            <div class="nav-group-title">Trilhas de Aprendizagem</div>
+            <!-- <div class="nav-group-title">Trilhas de Aprendizagem</div>
             <li class="nav-item" onclick="showSection('list-paths')">
                 <span class="method-badge get">GET</span> Listar Trilhas
             </li>
@@ -276,6 +276,26 @@
                 <span class="method-badge get">GET</span> Buscar Matrícula
             </li>
             <li class="nav-item" onclick="showSection('certificate-download-path')">
+                <span class="method-badge get">GET</span> Baixar Certificado
+            </li> -->
+
+            <div class="nav-group-title">Trilhas 2.0</div>
+            <li class="nav-item" onclick="showSection('list-journeys')">
+                <span class="method-badge get">GET</span> Listar Trilhas 2.0
+            </li>
+            <li class="nav-item" onclick="showSection('journey-info')">
+                <span class="method-badge get">GET</span> Info da Trilha 2.0
+            </li>
+            <li class="nav-item" onclick="showSection('list-journey-sessions')">
+                <span class="method-badge get">GET</span> Listar Turmas
+            </li>
+            <li class="nav-item" onclick="showSection('list-journey-enrollments')">
+                <span class="method-badge get">GET</span> Listar Matrículas
+            </li>
+            <li class="nav-item" onclick="showSection('search-journey-enrollment')">
+                <span class="method-badge get">GET</span> Buscar Matrícula
+            </li>
+            <li class="nav-item" onclick="showSection('certificate-download-journey')">
                 <span class="method-badge get">GET</span> Baixar Certificado
             </li>
         </ul>
@@ -984,7 +1004,7 @@
         </div>
 
 
-        <div id="list-paths" class="section">
+        <!-- <div id="list-paths" class="section">
             <h1>Listar Trilhas de Aprendizagem</h1>
             <p>Retorna uma listagem paginada de todas as Trilhas disponíveis. Permite a filtragem por categorias via Query String para focar em contextos específicos (como conteúdos publicados para o escopo Nacional) e embutir dados analíticos associados.</p>
             
@@ -1141,7 +1161,7 @@
             <pre><code>{
     "id": 3314,
     "name": "Gestão Orientada por Dados em Cooperativas",
-    "description": "Descubra como transformar dados em decisões...",
+    "description": "Descubra como transformar dados in decisões...",
     "duration": "P0Y0M45DT0H0M0S",
     "isPublished": true,
     "workload": {
@@ -1381,8 +1401,483 @@
             <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/path/certificate/download/574fbb2f-13fa-49b2-b4b8-4cab80165fea' \
 --header 'Accept: application/pdf' \
 --header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div> -->
+
+
+        <div id="list-journeys" class="section">
+            <h1>Listar Trilhas 2.0</h1>
+            <p>Retorna uma listagem paginada de todas as Trilhas 2.0 mapeadas e disponíveis na plataforma.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/journeys
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Valor recomendado <code>application/json</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de Query String</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>order[created_at]</code></td>
+                        <td>String</td>
+                        <td><span class="optional">Opcional.</span> Ordenação de retorno baseado na data de criação (Ex: <code>desc</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Número da página para controle de paginação (Ex: 1).</td>
+                    </tr>
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>Integer</td>
+                        <td><span class="optional">Opcional.</span> Quantidade máxima de registros retornados por página (Ex: 12).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "id": 99,
+            "uuid": "ba096076-07d2-492e-a69a-4b0ea2588b84",
+            "name": "Trilha 2.0 - Nacional",
+            "status": "published",
+            "workloadType": "hour",
+            "workloadValue": 50,
+            "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit purus mi dignissim in, quam est sollicitudin vel curae mattis eleifend dapibus proin eu...",
+            "image": "https://studion-hom.s3.amazonaws.com/021b9175-63bc-4971-b8b0-8ad528bd2c8a/journeys/9ec5069c-63ec-45e0-9ebe-9c5cd81ba92e.jpg",
+            "branches": [
+                {
+                    "id": 46,
+                    "name": "Nacional",
+                    "materializedPath": [46],
+                    "materializedPathChildrens": [46, 53, 55, 56, 70, 71, 72, 17253, 17280, 17281],
+                    "parentGroup": null
+                }
+            ],
+            "certificate": null,
+            "certificateType": 0
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": 2,
+    "previousPage": null,
+    "firstPage": 1,
+    "lastPage": 5,
+    "total": 58
+}</code></pre>
+
+            <h3>403 Forbidden (Acesso Negado)</h3>
+            <p>Retornado caso as credenciais ou escopos não permitam visualizar as jornadas de aprendizagem.</p>
+            <pre><code>{
+    "message": "learning_journey_not_allowed",
+    "code": 403
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location -g 'https://api-studion-sescoop.hom.dotgroup.com.br/api/journeys?order[created_at]=desc&page=1&limit=12' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+        <div id="journey-info" class="section">
+            <h1>Obter Dados de uma Trilha 2.0 Específica</h1>
+            <p>Retorna as informações estruturais, carga horária e metadados de uma Trilha 2.0 específica utilizando o seu ID único de identificação.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/journeys/{journey_id}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>journey_id</code></td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico de identificação da Trilha 2.0 (Ex: 99).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "id": 99,
+    "uuid": "ba096076-07d2-492e-a69a-4b0ea2588b84",
+    "name": "Trilha 2.0 - Nacional",
+    "status": "published",
+    "workloadType": "hour",
+    "workloadValue": 50,
+    "description": "Lorem ipsum dolor sit amet consectetur adipiscing elit purus mi dignissim in...",
+    "image": "https://studion-hom.s3.amazonaws.com/.../journey.jpg",
+    "branches": [
+        {
+            "id": 46,
+            "name": "Nacional",
+            "materializedPath": [46],
+            "materializedPathChildrens": [46, 53, 55, 56, 17281],
+            "parentGroup": null
+        }
+    ],
+    "certificate": {
+        "id": 233,
+        "type": "conclusion"
+    },
+    "certificateType": 1
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "journey_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/journeys/99' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
         </div>
 
+        <div id="list-journey-sessions" class="section">
+            <h1>Listar Turmas de uma Trilha 2.0</h1>
+            <p>Retorna todas as turmas/sessões associadas a uma Trilha 2.0 específica informando seu ID.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/journeys/{journey_id}/sessions
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>journey_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> O ID da Trilha 2.0 vinculada (Ex: 99).</td>
+                    </tr>
+                    <tr>
+                        <td><code>page</code></td>
+                        <td>Query</td>
+                        <td><span class="optional">Opcional.</span> Número da página para controle de paginação.</td>
+                    </tr>
+                    <tr>
+                        <td><code>limit</code></td>
+                        <td>Query</td>
+                        <td><span class="optional">Opcional.</span> Quantidade de itens por página.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "id": 11325,
+            "name": "Turma - Nacional - Trilha 2.0",
+            "uuid": "a8b29c58-6df3-47e5-8039-3d86999c70eb",
+            "type": "open",
+            "active": true,
+            "team": [
+                {
+                    "id": 15970,
+                    "applicationUser": {
+                        "id": 155335,
+                        "uuid": "6f6e6d5e-2080-428d-924d-573a958ddb66",
+                        "active": true,
+                        "profiles": [
+                            { "id": 109, "name": "Admin", "alias": "admin" }
+                        ],
+                        "userData": { "name": "Lucas Brandão Guimarães" }
+                    },
+                    "position": "primary"
+                }
+            ],
+            "availability": {
+                "initial": "2026-06-01T00:00:00-03:00",
+                "final": null
+            },
+            "vacancy": {
+                "maxVacancy": 0,
+                "enrollments": 0,
+                "free": true
+            },
+            "reenrollmentAllowed": true
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "total": 1
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "journey_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/journeys/99/sessions?page=1&limit=12' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="list-journey-enrollments" class="section">
+            <h1>Listar Matrículas de uma Trilha 2.0</h1>
+            <p>Retorna uma listagem completa e paginada contendo todas as matrículas ativas na sessão/turma pertencente a uma Trilha 2.0.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/sessions/{session_id}/users/all
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>Integer</td>
+                        <td><span class="required">Obrigatório.</span> O ID numérico da sessão/turma da Trilha 2.0 (Ex: 11325).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "uuid": "909aab0d-0936-4ed6-88eb-9619c39a441d",
+            "id": 88999,
+            "statusUpdatedAt": null,
+            "certificateHash": null,
+            "statusAlias": "em_andamento",
+            "status": "Em andamento",
+            "statusId": 262,
+            "migrated_user": false,
+            "email": "usuario.validacao@dotgroup.com.br",
+            "name": "Usuario Validacao",
+            "username": "usuario.validacao@dotgroup.com.br",
+            "branchName": null
+        },
+        {
+            "uuid": "ec9d6211-009b-4c7f-a2d3-a12c9e1fbf74",
+            "id": 89527,
+            "statusUpdatedAt": null,
+            "certificateHash": null,
+            "statusAlias": "nao_iniciou",
+            "status": "Não iniciou",
+            "statusId": 261,
+            "migrated_user": false,
+            "email": "usuario.validacao2@dotgroup.com.br",
+            "name": "Usuario Validacao Dois",
+            "username": "usuario.validacao2",
+            "branchName": null
+        }
+    ],
+    "actualPage": 1,
+    "nextPage": null,
+    "total": 2
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "session_id_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/sessions/11325/users/all?page=1' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="search-journey-enrollment" class="section">
+            <h1>Buscar Matrícula em Trilha 2.0</h1>
+            <p>Busca o status e as informações individuais de matrícula de um estudante específico filtrando através do parâmetro de <code>username</code>.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/sessions/{session_id}/users/all?query[name]={username}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Local</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>URL</td>
+                        <td><span class="required">Obrigatório.</span> ID numérico da sessão/turma avaliada (Ex: 11325).</td>
+                    </tr>
+                    <tr>
+                        <td><code>query[name]</code></td>
+                        <td>Query</td>
+                        <td><span class="required">Obrigatório.</span> O nome de usuário (username) exato do aluno para o filtro (Ex: <code>usuario.validacao</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <pre><code>{
+    "data": [
+        {
+            "uuid": "909aab0d-0936-4ed6-88eb-9619c39a441d",
+            "id": 88999,
+            "statusUpdatedAt": null,
+            "certificateHash": null,
+            "statusAlias": "em_andamento",
+            "status": "Em andamento",
+            "statusId": 262,
+            "migrated_user": false,
+            "email": "usuario.validacao@dotgroup.com.br",
+            "name": "Usuario Validacao",
+            "username": "usuario.validacao",
+            "branchName": null
+        }
+    ],
+    "actualPage": 1,
+    "total": 1
+}</code></pre>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "enrollment_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/sessions/11325/users/all?query[name]=usuario.validacao' \
+--header 'Accept: application/json' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
+
+        <div id="certificate-download-journey" class="section">
+            <h1>Download de Certificado de Trilha 2.0</h1>
+            <p>Recupera e processa o arquivo de certificado de uma jornada finalizada. O sistema valida as informações baseando-se estritamente no <code>certificate_hash</code> provido na URL.</p>
+            
+            <div class="endpoint-url">
+                <span class="method-badge get">GET</span>
+                /api/myself/journey/certificate/download/{certificate_hash}
+            </div>
+
+            <h2>Cabeçalhos (Headers)</h2>
+            <table>
+                <thead><tr><th>Nome</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> <code>Bearer &lt;seu_token_jwt&gt;</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> Defina o valor fixo como <code>application/pdf</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Parâmetros de URL</h2>
+            <table>
+                <thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead>
+                <tbody>
+                    <tr>
+                        <td><code>certificate_hash</code></td>
+                        <td>String</td>
+                        <td><span class="required">Obrigatório.</span> O hash/UUID criptográfico de validação exclusiva do certificado.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Respostas</h2>
+            <h3>200 OK (Sucesso)</h3>
+            <div class="success-box">
+                A requisição retorna com sucesso o conteúdo binário puro correspondente ao documento em <strong>PDF</strong>. Se o integrador estiver utilizando JavaScript (como Axios ou Fetch API), lembre-se de configurar a propriedade <code>responseType: 'blob'</code>.
+            </div>
+
+            <h3>404 Not Found</h3>
+            <pre><code>{
+    "message": "hash_not_found",
+    "code": 404
+}</code></pre>
+
+            <h2>Exemplo cURL</h2>
+            <pre><code>curl --location 'https://api-studion-sescoop.hom.dotgroup.com.br/api/myself/journey/certificate/download/5ff61cbc-7b90-4109-b060-af25b87fc377' \
+--header 'Accept: application/pdf' \
+--header 'Authorization: Bearer SEU_TOKEN_JWT_AQUI'</code></pre>
+        </div>
 
     </main>
 
